@@ -27,8 +27,10 @@ import {
     UnsupervisedLearningService,
     ReinforcementLearningService
 } from '../common';
+import { AdvancedLearningService } from '../common/advanced-learning-service';
 import { FrontendOpenCogService } from './frontend-opencog-service';
 import { FrontendKnowledgeManagementService } from './frontend-knowledge-management-service';
+import { FrontendAdvancedLearningService } from './frontend-advanced-learning-service';
 import { CodeAnalysisAgent } from './code-analysis-agent';
 import { LearningAdaptationAgent } from './learning-adaptation-agent';
 // Phase 2 cognitive services
@@ -42,6 +44,7 @@ import { CognitiveEditorIntegration } from './cognitive-editor-integration';
 import { ComprehensiveCodeAnalysisAgent } from './comprehensive-code-analysis-agent';
 import { IntelligentAssistanceAgent } from './intelligent-assistance-agent';
 import { AdvancedReasoningAgent } from './advanced-reasoning-agent';
+import { AdvancedLearningAgent } from './advanced-learning-agent';
 import { UserBehaviorLearningAgent } from './user-behavior-learning-agent';
 import { UserBehaviorMonitorService } from './user-behavior-monitor-service';
 import { SpecializedProblemSolvingAgent } from './specialized-problem-solving-agent';
@@ -91,6 +94,9 @@ export default new ContainerModule(bind => {
     // Bind the frontend Knowledge Management service
     bind(KnowledgeManagementService).to(FrontendKnowledgeManagementService).inSingletonScope();
     
+    // Bind the frontend Advanced Learning service
+    bind(AdvancedLearningService).to(FrontendAdvancedLearningService).inSingletonScope();
+    
     // Phase 3: Bind frontend reasoning services
     bind(DeductiveReasoningService).to(FrontendDeductiveReasoningService).inSingletonScope();
     bind(InductiveReasoningService).to(FrontendInductiveReasoningService).inSingletonScope();
@@ -116,6 +122,7 @@ export default new ContainerModule(bind => {
     bind(ComprehensiveCodeAnalysisAgent).toSelf().inSingletonScope();
     bind(IntelligentAssistanceAgent).toSelf().inSingletonScope();
     bind(AdvancedReasoningAgent).toSelf().inSingletonScope();
+    bind(AdvancedLearningAgent).toSelf().inSingletonScope();
     bind(UserBehaviorLearningAgent).toSelf().inSingletonScope();
     bind(SpecializedProblemSolvingAgent).toSelf().inSingletonScope();
     
@@ -135,6 +142,7 @@ export default new ContainerModule(bind => {
     bind(Symbol.for('Agent')).to(ComprehensiveCodeAnalysisAgent).inSingletonScope();
     bind(Symbol.for('Agent')).to(IntelligentAssistanceAgent).inSingletonScope();
     bind(Symbol.for('Agent')).to(AdvancedReasoningAgent).inSingletonScope();
+    bind(Symbol.for('Agent')).to(AdvancedLearningAgent).inSingletonScope();
     bind(Symbol.for('Agent')).to(UserBehaviorLearningAgent).inSingletonScope();
     bind(Symbol.for('Agent')).to(SpecializedProblemSolvingAgent).inSingletonScope();
 

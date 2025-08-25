@@ -33,7 +33,19 @@ import {
     MultiModalPatternResult,
     MultiModalLearningData,
     ModalityType,
-    TensorData
+    TensorData,
+    Tensor3D,
+    // Advanced learning types
+    AdvancedLearningType,
+    AdvancedLearningData,
+    AdvancedLearningResult,
+    AdvancedLearningModel,
+    NeuralNetworkConfig,
+    MetaLearningConfig,
+    TransferLearningConfig,
+    EnsembleLearningConfig,
+    OnlineLearningConfig,
+    ActiveLearningConfig
 } from './opencog-types';
 import { KnowledgeManagementService } from './knowledge-management-service';
 
@@ -176,6 +188,90 @@ export interface OpenCogService {
         attentionWeights: Record<string, number>;
         focusedData: MultiModalData[];
         attentionMap?: number[];
+    }>;
+
+    // ===== PHASE 5: ADVANCED LEARNING ALGORITHMS =====
+
+    /**
+     * 3 DoF tensor operations
+     */
+    processTensor3D(tensor: Tensor3D): Promise<Tensor3D>;
+    performTensor3DOperation(tensor: Tensor3D, operation: string, parameters?: Record<string, any>): Promise<Tensor3D>;
+    fuseTensor3DData(tensors: Tensor3D[], strategy?: 'concatenation' | 'addition' | 'attention' | 'learned'): Promise<Tensor3D>;
+
+    /**
+     * Advanced learning algorithms
+     */
+    trainAdvancedModel(data: AdvancedLearningData): Promise<AdvancedLearningResult>;
+    predictWithAdvancedModel(modelId: string, input: TensorData | Tensor3D | any): Promise<AdvancedLearningResult>;
+    updateAdvancedModel(modelId: string, data: AdvancedLearningData): Promise<AdvancedLearningResult>;
+
+    /**
+     * Neural network operations
+     */
+    createNeuralNetwork(config: NeuralNetworkConfig): Promise<AdvancedLearningModel>;
+    trainNeuralNetwork(modelId: string, data: AdvancedLearningData[]): Promise<AdvancedLearningResult>;
+    evaluateNeuralNetwork(modelId: string, testData: AdvancedLearningData[]): Promise<AdvancedLearningResult>;
+
+    /**
+     * Meta-learning operations
+     */
+    initializeMetaLearning(config: MetaLearningConfig): Promise<AdvancedLearningModel>;
+    metaLearn(modelId: string, tasks: AdvancedLearningData[][]): Promise<AdvancedLearningResult>;
+    adaptToNewTask(modelId: string, taskData: AdvancedLearningData[], shots: number): Promise<AdvancedLearningResult>;
+
+    /**
+     * Transfer learning operations
+     */
+    initializeTransferLearning(config: TransferLearningConfig): Promise<AdvancedLearningModel>;
+    performTransferLearning(modelId: string, targetData: AdvancedLearningData[]): Promise<AdvancedLearningResult>;
+
+    /**
+     * Ensemble learning operations
+     */
+    createEnsemble(config: EnsembleLearningConfig): Promise<AdvancedLearningModel>;
+    trainEnsemble(modelId: string, data: AdvancedLearningData[]): Promise<AdvancedLearningResult>;
+    ensemblePredict(modelId: string, input: any): Promise<AdvancedLearningResult>;
+
+    /**
+     * Online learning operations
+     */
+    initializeOnlineLearning(config: OnlineLearningConfig): Promise<AdvancedLearningModel>;
+    onlineUpdate(modelId: string, data: AdvancedLearningData): Promise<AdvancedLearningResult>;
+    getOnlineLearningStats(modelId: string): Promise<{
+        totalUpdates: number;
+        currentAccuracy: number;
+        adaptationRate: number;
+        forgettingRate: number;
+    }>;
+
+    /**
+     * Active learning operations
+     */
+    initializeActiveLearning(config: ActiveLearningConfig): Promise<AdvancedLearningModel>;
+    queryForLabels(modelId: string, unlabeledData: any[]): Promise<{
+        selectedSamples: any[];
+        uncertaintyScores: number[];
+        expectedImprovement: number[];
+    }>;
+    updateWithActiveLabels(modelId: string, labeledData: AdvancedLearningData[]): Promise<AdvancedLearningResult>;
+
+    /**
+     * Advanced learning model management
+     */
+    getAdvancedLearningModel(modelId: string): Promise<AdvancedLearningModel | undefined>;
+    listAdvancedLearningModels(type?: AdvancedLearningType): Promise<AdvancedLearningModel[]>;
+    deleteAdvancedLearningModel(modelId: string): Promise<boolean>;
+    
+    /**
+     * Advanced learning analytics
+     */
+    getAdvancedLearningStats(): Promise<{
+        totalAdvancedModels: number;
+        modelTypeDistribution: Record<AdvancedLearningType, number>;
+        averageAccuracy: Record<AdvancedLearningType, number>;
+        totalTrainingTime: number;
+        memoryUsage: number;
     }>;
 }
 
