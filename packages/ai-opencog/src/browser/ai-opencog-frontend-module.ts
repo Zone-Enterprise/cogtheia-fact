@@ -25,7 +25,8 @@ import {
     AbductiveReasoningService,
     SupervisedLearningService,
     UnsupervisedLearningService,
-    ReinforcementLearningService
+    ReinforcementLearningService,
+    ProductionOptimizationService
 } from '../common';
 import { AdvancedLearningService } from '../common/advanced-learning-service';
 import { FrontendOpenCogService } from './frontend-opencog-service';
@@ -86,6 +87,10 @@ import { OpenCogChatAgent } from './opencog-chat-agent';
 import { ChatAgent } from '@theia/ai-chat/lib/common/chat-agents';
 // Phase 5: Multi-Modal Cognitive Processing Widget
 import { MultiModalCognitiveWidget } from './cognitive-widgets/multi-modal-cognitive-widget';
+// Phase 5: Production Monitoring Widget
+import { ProductionMonitoringWidget } from './production-monitoring-widget';
+import { FrontendProductionOptimizationService } from './frontend-production-optimization-service';
+import { ProductionMonitoringContribution } from './production-monitoring-contribution';
 
 export default new ContainerModule(bind => {
     // Bind the frontend OpenCog service
@@ -96,6 +101,9 @@ export default new ContainerModule(bind => {
     
     // Bind the frontend Advanced Learning service
     bind(AdvancedLearningService).to(FrontendAdvancedLearningService).inSingletonScope();
+    
+    // Phase 5: Bind the frontend Production Optimization service
+    bind(ProductionOptimizationService).to(FrontendProductionOptimizationService).inSingletonScope();
     
     // Phase 3: Bind frontend reasoning services
     bind(DeductiveReasoningService).to(FrontendDeductiveReasoningService).inSingletonScope();
@@ -163,6 +171,9 @@ export default new ContainerModule(bind => {
     
     // Phase 5: Multi-Modal Cognitive Processing Widget
     bind(MultiModalCognitiveWidget).toSelf();
+    
+    // Phase 5: Production Monitoring Widget
+    bind(ProductionMonitoringWidget).toSelf();
 
     // Bind widget factories
     bind(WidgetFactory).toDynamicValue(ctx => ({
@@ -190,17 +201,27 @@ export default new ContainerModule(bind => {
         createWidget: () => ctx.container.get(MultiModalCognitiveWidget)
     })).inSingletonScope();
 
+    bind(WidgetFactory).toDynamicValue(ctx => ({
+        id: ProductionMonitoringWidget.ID,
+        createWidget: () => ctx.container.get(ProductionMonitoringWidget)
+    })).inSingletonScope();
+
     // Bind widget contributions
     bind(CognitiveWidgetsContribution).toSelf().inSingletonScope();
     bind(LearningProgressContribution).toSelf().inSingletonScope();
     bind(KnowledgeExplorerContribution).toSelf().inSingletonScope();
     bind(CognitiveAssistantContribution).toSelf().inSingletonScope();
     bind(MultiModalCognitiveContribution).toSelf().inSingletonScope();
+    bind(ProductionMonitoringContribution).toSelf().inSingletonScope();
 
     // Register contributions
     bind(FrontendApplicationContribution).toService(CognitiveWidgetsContribution);
     bind(CommandContribution).toService(CognitiveWidgetsContribution);
     bind(MenuContribution).toService(CognitiveWidgetsContribution);
+
+    // Register production monitoring contributions
+    bind(CommandContribution).toService(ProductionMonitoringContribution);
+    bind(MenuContribution).toService(ProductionMonitoringContribution);
 
     // Bind OpenCog Chat Agent
     bind(OpenCogChatAgent).toSelf().inSingletonScope();
