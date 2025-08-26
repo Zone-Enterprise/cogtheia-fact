@@ -36,6 +36,7 @@ import {
     DistributedReasoningService,
     DISTRIBUTED_REASONING_SERVICE_PATH
 } from '../common';
+import { AdvancedLearningService, ADVANCED_LEARNING_SERVICE_PATH } from '../common/advanced-learning-service';
 import { AtomSpaceService } from './atomspace-service';
 import { KnowledgeManagementServiceImpl } from './knowledge-management-service-impl';
 // Phase 2 backend components
@@ -50,6 +51,7 @@ import { AbductiveReasoningServiceImpl } from './abductive-reasoning-service';
 import { SupervisedLearningServiceImpl } from './supervised-learning-service';
 import { UnsupervisedLearningServiceImpl } from './unsupervised-learning-service';
 import { ReinforcementLearningServiceImpl } from './reinforcement-learning-service';
+import { AdvancedLearningServiceImpl } from './advanced-learning-service';
 // Phase 5 distributed reasoning
 import { DistributedReasoningServiceImpl } from './distributed-reasoning-service-impl';
 
@@ -75,6 +77,9 @@ export default new ContainerModule(bind => {
     bind(SupervisedLearningService).to(SupervisedLearningServiceImpl).inSingletonScope();
     bind(UnsupervisedLearningService).to(UnsupervisedLearningServiceImpl).inSingletonScope();
     bind(ReinforcementLearningService).to(ReinforcementLearningServiceImpl).inSingletonScope();
+    
+    // Phase 5: Bind advanced learning service
+    bind(AdvancedLearningService).to(AdvancedLearningServiceImpl).inSingletonScope();
     
     // Phase 5: Bind distributed reasoning service
     bind(DistributedReasoningService).to(DistributedReasoningServiceImpl).inSingletonScope();
@@ -126,6 +131,13 @@ export default new ContainerModule(bind => {
     bind(ConnectionHandler).toDynamicValue(ctx =>
         new RpcConnectionHandler(REINFORCEMENT_LEARNING_SERVICE_PATH, () =>
             ctx.container.get(ReinforcementLearningService)
+        )
+    ).inSingletonScope();
+    
+    // Phase 5: Bind advanced learning service connection handler
+    bind(ConnectionHandler).toDynamicValue(ctx =>
+        new RpcConnectionHandler(ADVANCED_LEARNING_SERVICE_PATH, () =>
+            ctx.container.get(AdvancedLearningService)
         )
     ).inSingletonScope();
     

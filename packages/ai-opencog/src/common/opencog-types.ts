@@ -313,6 +313,17 @@ export interface TensorData {
 }
 
 /**
+ * Tensor data with 3 degrees of freedom for specialized cognitive processing
+ */
+export interface Tensor3D {
+    data: number[] | Float32Array | Float64Array;
+    shape: [number, number, number]; // 3 DoF as specified
+    dtype: 'float32' | 'float64' | 'int32' | 'int64';
+    description?: string;
+    operations?: TensorOperation[];
+}
+
+/**
  * Mixed modal data combining multiple modalities
  */
 export interface MixedModalData {
@@ -355,9 +366,9 @@ export interface AudioFeature {
  * Tensor operations for cognitive processing
  */
 export interface TensorOperation {
-    type: 'convolution' | 'pooling' | 'normalization' | 'activation' | 'fusion' | 'attention';
+    type: 'convolution' | 'pooling' | 'normalization' | 'activation' | 'fusion' | 'attention' | 'dense' | 'dropout' | 'batch_norm' | 'layer_norm' | 'conv3d' | 'pool3d' | 'normalize3d';
     parameters: Record<string, any>;
-    result?: TensorData;
+    result?: TensorData | Tensor3D;
 }
 
 /**
@@ -505,4 +516,191 @@ export interface MultiModalLearningData extends LearningData {
     crossModalLabels?: Record<string, any>;
     temporalSequence?: number[];
     cognitiveGoal?: string;
+}
+
+// ===== PHASE 5: ADVANCED LEARNING ALGORITHMS =====
+
+/**
+ * Advanced learning algorithm types for sophisticated cognitive processing
+ */
+export type AdvancedLearningType = 
+    | 'deep_neural_network'
+    | 'convolutional_neural_network'
+    | 'recurrent_neural_network'
+    | 'transformer'
+    | 'meta_learning'
+    | 'transfer_learning'
+    | 'ensemble_learning'
+    | 'online_learning'
+    | 'active_learning'
+    | 'federated_learning'
+    | 'continual_learning'
+    | 'few_shot_learning';
+
+/**
+ * Neural network architecture configuration
+ */
+export interface NeuralNetworkConfig {
+    type: 'feedforward' | 'cnn' | 'rnn' | 'lstm' | 'gru' | 'transformer';
+    layers: NetworkLayer[];
+    optimizer: OptimizerConfig;
+    lossFunction: string;
+    metrics: string[];
+    inputShape: number[] | [number, number, number]; // Support for 3D inputs
+}
+
+/**
+ * Network layer configuration
+ */
+export interface NetworkLayer {
+    type: 'dense' | 'conv2d' | 'conv3d' | 'lstm' | 'gru' | 'attention' | 'dropout' | 'batch_norm' | 'layer_norm';
+    units?: number;
+    activation?: string;
+    dropoutRate?: number;
+    filters?: number;
+    kernelSize?: number | [number, number] | [number, number, number];
+    strides?: number | [number, number] | [number, number, number];
+    padding?: 'valid' | 'same';
+    parameters?: Record<string, any>;
+}
+
+/**
+ * Optimizer configuration for training
+ */
+export interface OptimizerConfig {
+    type: 'sgd' | 'adam' | 'rmsprop' | 'adagrad' | 'adadelta' | 'adamax';
+    learningRate: number;
+    momentum?: number;
+    beta1?: number;
+    beta2?: number;
+    epsilon?: number;
+    decay?: number;
+    clipNorm?: number;
+}
+
+/**
+ * Meta-learning configuration for learning-to-learn scenarios
+ */
+export interface MetaLearningConfig {
+    algorithm: 'maml' | 'reptile' | 'prototypical_networks' | 'matching_networks';
+    innerLearningRate: number;
+    outerLearningRate: number;
+    innerSteps: number;
+    taskDistribution: string;
+    supportSetSize: number;
+    querySetSize: number;
+}
+
+/**
+ * Transfer learning configuration
+ */
+export interface TransferLearningConfig {
+    sourceModel: string;
+    targetTask: string;
+    frozenLayers: number[];
+    fineTuneFromLayer?: number;
+    transferStrategy: 'feature_extraction' | 'fine_tuning' | 'domain_adaptation';
+    adaptationMethod?: 'adversarial' | 'coral' | 'dann' | 'gradient_reversal';
+}
+
+/**
+ * Ensemble learning configuration
+ */
+export interface EnsembleLearningConfig {
+    strategy: 'bagging' | 'boosting' | 'stacking' | 'voting';
+    baseModels: NeuralNetworkConfig[];
+    combiningMethod: 'average' | 'weighted_average' | 'majority_vote' | 'meta_learner';
+    weights?: number[];
+    diversityMetric?: string;
+}
+
+/**
+ * Online learning configuration for continuous adaptation
+ */
+export interface OnlineLearningConfig {
+    algorithm: 'sgd' | 'perceptron' | 'passive_aggressive' | 'ftrl' | 'online_gradient_descent';
+    bufferSize: number;
+    adaptationRate: number;
+    forgettingFactor?: number;
+    regularization?: 'l1' | 'l2' | 'elastic_net';
+}
+
+/**
+ * Active learning configuration for intelligent data selection
+ */
+export interface ActiveLearningConfig {
+    strategy: 'uncertainty_sampling' | 'query_by_committee' | 'expected_model_change' | 'variance_reduction';
+    acquisitionFunction: 'entropy' | 'margin' | 'least_confident' | 'expected_improvement';
+    batchSize: number;
+    diversityWeight?: number;
+    explorationWeight?: number;
+}
+
+/**
+ * Advanced learning data supporting multiple algorithms
+ */
+export interface AdvancedLearningData {
+    id?: string;
+    type: AdvancedLearningType;
+    input: TensorData | Tensor3D | any;
+    target?: TensorData | Tensor3D | any;
+    context: LearningContext;
+    config: NeuralNetworkConfig | MetaLearningConfig | TransferLearningConfig | EnsembleLearningConfig | OnlineLearningConfig | ActiveLearningConfig;
+    timestamp: number;
+    metadata?: {
+        taskId?: string;
+        episodeId?: string;
+        batchId?: string;
+        sequenceLength?: number;
+        [key: string]: any;
+    };
+}
+
+/**
+ * Advanced learning result with detailed metrics
+ */
+export interface AdvancedLearningResult {
+    success: boolean;
+    modelId: string;
+    algorithm: AdvancedLearningType;
+    metrics: {
+        loss: number;
+        accuracy?: number;
+        precision?: number;
+        recall?: number;
+        f1Score?: number;
+        convergence?: boolean;
+        trainingTime: number;
+        [key: string]: any;
+    };
+    predictions?: any[];
+    modelState?: any;
+    nextActions?: string[];
+}
+
+/**
+ * Advanced learning model with sophisticated capabilities
+ */
+export interface AdvancedLearningModel {
+    id: string;
+    type: AdvancedLearningType;
+    config: any;
+    state: any;
+    version: number;
+    created: number;
+    lastUpdated: number;
+    performance: {
+        trainingAccuracy: number;
+        validationAccuracy: number;
+        testAccuracy?: number;
+        convergenceMetrics: Record<string, number>;
+    };
+    capabilities: string[];
+    metadata: {
+        datasetSize: number;
+        epochs: number;
+        parameters: number;
+        memoryUsage: number;
+        [key: string]: any;
+    };
 }
