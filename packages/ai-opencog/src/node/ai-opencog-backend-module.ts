@@ -34,7 +34,9 @@ import {
     ReinforcementLearningService,
     REINFORCEMENT_LEARNING_SERVICE_PATH,
     DistributedReasoningService,
-    DISTRIBUTED_REASONING_SERVICE_PATH
+    DISTRIBUTED_REASONING_SERVICE_PATH,
+    ProductionOptimizationService,
+    PRODUCTION_OPTIMIZATION_SERVICE_PATH
 } from '../common';
 import { AdvancedLearningService, ADVANCED_LEARNING_SERVICE_PATH } from '../common/advanced-learning-service';
 import { AtomSpaceService } from './atomspace-service';
@@ -54,6 +56,8 @@ import { ReinforcementLearningServiceImpl } from './reinforcement-learning-servi
 import { AdvancedLearningServiceImpl } from './advanced-learning-service';
 // Phase 5 distributed reasoning
 import { DistributedReasoningServiceImpl } from './distributed-reasoning-service-impl';
+// Phase 5 production optimization
+import { ProductionOptimizationServiceImpl } from './production-optimization-service-impl';
 
 export default new ContainerModule(bind => {
     bind(OpenCogService).to(AtomSpaceService).inSingletonScope();
@@ -83,6 +87,9 @@ export default new ContainerModule(bind => {
     
     // Phase 5: Bind distributed reasoning service
     bind(DistributedReasoningService).to(DistributedReasoningServiceImpl).inSingletonScope();
+    
+    // Phase 5: Bind production optimization service
+    bind(ProductionOptimizationService).to(ProductionOptimizationServiceImpl).inSingletonScope();
     
     bind(ConnectionHandler).toDynamicValue(ctx =>
         new RpcConnectionHandler(OPENCOG_SERVICE_PATH, () =>
@@ -145,6 +152,13 @@ export default new ContainerModule(bind => {
     bind(ConnectionHandler).toDynamicValue(ctx =>
         new RpcConnectionHandler(DISTRIBUTED_REASONING_SERVICE_PATH, () =>
             ctx.container.get(DistributedReasoningService)
+        )
+    ).inSingletonScope();
+    
+    // Phase 5: Bind production optimization service connection handler
+    bind(ConnectionHandler).toDynamicValue(ctx =>
+        new RpcConnectionHandler(PRODUCTION_OPTIMIZATION_SERVICE_PATH, () =>
+            ctx.container.get(ProductionOptimizationService)
         )
     ).inSingletonScope();
 });

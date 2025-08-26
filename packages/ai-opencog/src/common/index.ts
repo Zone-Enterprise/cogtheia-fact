@@ -24,3 +24,5 @@ export * from './learning-services';
 export * from './sensor-motor-types';
 export * from './distributed-reasoning-types';
 export * from './distributed-reasoning-service';
+export * from './production-optimization-types';
+export * from './production-optimization-service';
