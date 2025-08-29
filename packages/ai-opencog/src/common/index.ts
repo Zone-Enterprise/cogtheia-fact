@@ -26,3 +26,7 @@ export * from './distributed-reasoning-types';
 export * from './distributed-reasoning-service';
 export * from './production-optimization-types';
 export * from './production-optimization-service';
+export * from './cognitive-cache';
+export * from './cognitive-personalization';
+export * from './resource-manager';
+export * from './feedback-integration';
