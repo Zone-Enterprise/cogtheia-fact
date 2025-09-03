@@ -48,7 +48,12 @@
     "compile": "theiaext compile",
     "lint": "theiaext lint",
     "test": "theiaext test",
-    "watch": "theiaext watch"
+    "watch": "theiaext watch",
+    "validate:phase6": "node phase6-validation.js",
+    "docker:build": "docker build -t theia-opencog:latest .",
+    "docker:run": "docker run -d --name theia-opencog -p 3000:3000 theia-opencog:latest",
+    "deploy:production": "docker-compose -f docker-compose.production.yml up -d",
+    "deploy:staging": "docker-compose -f docker-compose.production.yml -p staging up -d"
   },
   "devDependencies": {
     "@theia/ext-scripts": "1.64.0"

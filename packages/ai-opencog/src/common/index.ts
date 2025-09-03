@@ -30,3 +30,7 @@ export * from './cognitive-cache';
 export * from './cognitive-personalization';
 export * from './resource-manager';
 export * from './feedback-integration';
+export * from './production-configuration';
+export * from './production-deployment';
+export * from './production-monitoring';
+export * from './community-enhancement';
