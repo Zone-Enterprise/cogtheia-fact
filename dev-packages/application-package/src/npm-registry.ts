@@ -15,7 +15,7 @@
 // *****************************************************************************
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as nano from 'nano';
+import nano from 'nano';
 import { RequestContext } from '@theia/request';
 import { NodeRequestService } from '@theia/request/lib/node-request-service';
 import { NpmRegistryProps } from './application-props';
@@ -128,8 +128,11 @@ export class NpmRegistry {
                 this.changes.stop();
             }
             // Invalidate index with NPM registry web hooks
-            this.changes = nano('https://replicate.npmjs.com').use('registry').changesReader;
-            this.changes.get({}).on('change', change => this.invalidate(change.id));
+            const nanoInstance = nano('https://replicate.npmjs.com');
+            if (nanoInstance) {
+                this.changes = nanoInstance.use('registry').changesReader;
+                this.changes.get({}).on('change', change => this.invalidate(change.id));
+            }
         }
     }
     protected invalidate(name: string): void {

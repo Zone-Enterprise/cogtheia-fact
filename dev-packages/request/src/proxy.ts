@@ -15,11 +15,11 @@
  ********************************************************************************/
 
 import { parse as parseUrl, Url } from 'url';
-import * as httpAgent from 'http-proxy-agent';
-import * as httpsAgent from 'https-proxy-agent';
+import { default as createHttpProxyAgent } from 'http-proxy-agent';
+import { default as createHttpsProxyAgent } from 'https-proxy-agent';
 import process from "node:process";
 
-export type ProxyAgent = httpAgent.HttpProxyAgent | httpsAgent.HttpsProxyAgent;
+export type ProxyAgent = ReturnType<typeof createHttpProxyAgent> | ReturnType<typeof createHttpsProxyAgent>;
 
 function getSystemProxyURI(requestURL: Url, env: typeof process.env): string | undefined {
     if (requestURL.protocol === 'http:') {
@@ -57,6 +57,6 @@ export function getProxyAgent(rawRequestURL: string, env: typeof process.env, op
         rejectUnauthorized: !!options.strictSSL,
     };
 
-    const createAgent = requestURL.protocol === 'http:' ? httpAgent : httpsAgent;
+    const createAgent = requestURL.protocol === 'http:' ? createHttpProxyAgent : createHttpsProxyAgent;
     return createAgent(opts);
 }

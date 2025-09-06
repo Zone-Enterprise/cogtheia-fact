@@ -15,7 +15,7 @@
 // *****************************************************************************
 
 import process from "node:process";
-const { Downloader } = require('nodejs-file-downloader');
+import { Downloader } from 'nodejs-file-downloader';
 
 new Downloader({
     url: 'https://schemastore.org/api/json/catalog.json',
