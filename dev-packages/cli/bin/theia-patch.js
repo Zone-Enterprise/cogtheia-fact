@@ -17,9 +17,11 @@
 // *****************************************************************************
 // @ts-check
 import process from "node:process";
-const path = require('path');
-const cp = require('child_process');
+import path from "node:path";
+import cp from "node:child_process";
+import { createRequire } from "node:module";
 
+const require = createRequire(import.meta.url);
 const patchPackage = require.resolve('patch-package');
 console.log(`patch-package = ${patchPackage}`);
 
