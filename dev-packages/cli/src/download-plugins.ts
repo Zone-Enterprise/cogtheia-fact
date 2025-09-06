@@ -18,7 +18,7 @@
 
 import { OVSXApiFilterImpl, OVSXClient, VSXTargetPlatform } from '@theia/ovsx-client';
 import * as chalk from 'chalk';
-import * as decompress from 'decompress';
+import decompress from 'decompress'; // Fix incorrect import for default export
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import * as temp from 'temp';

@@ -404,7 +404,10 @@ export namespace WaitUntilEvent {
             return;
         }
         if (timeout !== undefined) {
-            await Promise.race([Promise.all(waitables), new Promise(resolve => setTimeout(resolve, timeout))]);
+            await Promise.race([
+                Promise.all(waitables),
+                new Promise<void>(resolve => setTimeout(resolve, timeout))
+            ]);
         } else {
             await Promise.all(waitables);
         }

@@ -49,9 +49,9 @@ export class Deferred<T = void> {
  */
 export function timeout(ms: number, token = CancellationToken.None): Promise<void> {
     const deferred = new Deferred<void>();
-    const handle = setTimeout(() => deferred.resolve(), ms);
+    const handle: NodeJS.Timeout | number = setTimeout(() => deferred.resolve(), ms);
     token.onCancellationRequested(() => {
-        clearTimeout(handle);
+        clearTimeout(handle as NodeJS.Timeout);
         deferred.reject(cancelled());
     });
     return deferred.promise;

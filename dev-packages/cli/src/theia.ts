@@ -17,8 +17,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as temp from 'temp';
-import * as yargs from 'yargs';
-import yargsFactory = require('yargs/yargs');
+import yargs from 'yargs';
 import { ApplicationPackageManager, rebuild } from '@theia/application-manager';
 import { ApplicationProps, DEFAULT_SUPPORTED_API_VERSION } from '@theia/application-package';
 import checkDependencies from './check-dependencies';
@@ -111,19 +110,21 @@ async function theiaCli(): Promise<void> {
     const projectPath = process.cwd();
     // Create a sub `yargs` parser to read `app-target` without
     // affecting the global `yargs` instance used by the CLI.
-    const { appTarget } = defineCommonOptions(yargsFactory()).help(false).parse();
+    const yargsInstance = yargs().command('$0', 'default command').help(false).strict(); // Refined yargs instance
+    const { appTarget } = defineCommonOptions(yargsInstance).parse(); // Use the refined yargs instance
     const manager = new ApplicationPackageManager({ projectPath, appTarget });
     const localizationManager = new LocalizationManager();
     const { target } = manager.pck;
-    defineCommonOptions(yargs)
+    defineCommonOptions(yargsInstance); // Use the refined yargs instance
+    yargsInstance
         .command<{
             theiaArgs?: (string | number)[]
         }>({
             command: 'start [theia-args...]',
             describe: `Start the ${target} backend`,
             // Disable this command's `--help` option so that it is forwarded to Theia's CLI
-            builder: cli => cli.help(false) as yargs.Argv,
-            handler: async ({ theiaArgs }) => {
+            builder: (cli: yargs.Argv) => cli.help(false) as yargs.Argv,
+            handler: async ({ theiaArgs }: { theiaArgs?: (string | number)[] }) => {
                 manager.start(toStringArray(theiaArgs));
             }
         })
@@ -148,7 +149,7 @@ async function theiaCli(): Promise<void> {
             command: 'generate',
             describe: `Generate various files for the ${target} target`,
             builder: cli => ApplicationPackageManager.defineGeneratorOptions(cli),
-            handler: async ({ mode, splitFrontend }) => {
+            handler: async ({ mode, splitFrontend }: { mode: 'development' | 'production', splitFrontend?: boolean }) => {
                 await manager.generate({ mode, splitFrontend });
             }
         })
@@ -166,7 +167,7 @@ async function theiaCli(): Promise<void> {
                     description: 'Display Webpack\'s help',
                     default: false
                 }),
-            handler: async ({ mode, splitFrontend, webpackHelp, webpackArgs = [] }) => {
+            handler: async ({ mode, splitFrontend, webpackHelp, webpackArgs = [] }: { mode: 'development' | 'production', splitFrontend?: boolean, webpackHelp: boolean, webpackArgs?: (string | number)[] }) => {
                 await manager.build(
                     webpackHelp
                         ? ['--help']
@@ -195,7 +196,7 @@ async function theiaCli(): Promise<void> {
                     default: false
                 }
             },
-            handler: ({ suppress }) => {
+            handler: ({ suppress }: { suppress: boolean }) => {
                 checkDependencies({
                     workspaces: ['packages/*'],
                     include: ['**'],
@@ -221,7 +222,7 @@ async function theiaCli(): Promise<void> {
                     default: false
                 }
             },
-            handler: ({ suppress }) => {
+            handler: ({ suppress }: { suppress: boolean }) => {
                 checkDependencies({
                     workspaces: undefined,
                     include: ['@theia/**'],
@@ -247,7 +248,7 @@ async function theiaCli(): Promise<void> {
                     default: false
                 }
             },
-            handler: ({ suppress }) => {
+            handler: ({ suppress }: { suppress: boolean }) => {
                 checkDependencies({
                     workspaces: undefined,
                     include: ['**'],
@@ -333,6 +334,15 @@ async function theiaCli(): Promise<void> {
                 skipSingleTheiaVersion,
                 onlyTheiaExtensions,
                 suppress
+            }: {
+                workspaces: string[] | undefined,
+                include: string[],
+                exclude: string[],
+                skipHoisted: boolean,
+                skipUniqueness: boolean,
+                skipSingleTheiaVersion: boolean,
+                onlyTheiaExtensions: boolean,
+                suppress: boolean
             }) => {
                 checkDependencies({
                     workspaces,
@@ -409,7 +419,18 @@ async function theiaCli(): Promise<void> {
                     type: 'string'
                 }
             },
-            handler: async ({ apiUrl, proxyUrl, proxyAuthorization, strictSsl, ovsxRouterConfig, ...options }) => {
+            handler: async ({ apiUrl, proxyUrl, proxyAuthorization, strictSsl, ovsxRouterConfig, ...options }: {
+                apiUrl: string,
+                proxyUrl?: string,
+                proxyAuthorization?: string,
+                strictSsl: boolean,
+                ovsxRouterConfig?: string,
+                packed: boolean,
+                'ignore-errors': boolean,
+                'api-version': string,
+                'parallel': boolean,
+                'rate-limit': number
+            }) => {
                 const requestService = new NodeRequestService();
                 await requestService.configure({
                     proxyUrl,
@@ -417,7 +438,7 @@ async function theiaCli(): Promise<void> {
                     strictSSL: strictSsl
                 });
                 let client: OVSXClient | undefined;
-                const rateLimiter = new RateLimiter({ tokensPerInterval: options.rateLimit, interval: 'second' });
+                const rateLimiter = new RateLimiter({ tokensPerInterval: options['rate-limit'], interval: 'second' });
                 if (ovsxRouterConfig) {
                     const routerConfig = await fs.promises.readFile(ovsxRouterConfig, 'utf8').then(JSON.parse, error => {
                         console.error(error);
@@ -466,7 +487,13 @@ async function theiaCli(): Promise<void> {
                     describe: 'The source language of the translation file'
                 }
             },
-            handler: async ({ freeApi, deeplKey, file, sourceLanguage, languages = [] }) => {
+            handler: async ({ freeApi, deeplKey, file, sourceLanguage, languages = [] }: {
+                freeApi?: boolean,
+                deeplKey: string,
+                file: string,
+                languages: string[],
+                sourceLanguage?: string
+            }) => {
                 const success = await localizationManager.localize({
                     sourceFile: file,
                     freeApi: freeApi ?? true,
@@ -585,7 +612,27 @@ async function theiaCli(): Promise<void> {
                     default: false
                 }
             },
-            handler: async ({ testInspect, testExtension, testFile, testIgnore, testRecursive, testSort, testSpec, testCoverage, theiaArgs }) => {
+            handler: async ({
+                testInspect,
+                testExtension,
+                testFile,
+                testIgnore,
+                testRecursive,
+                testSort,
+                testSpec,
+                testCoverage,
+                theiaArgs
+            }: {
+                testInspect: boolean;
+                testExtension: string[];
+                testFile: string[];
+                testIgnore: string[];
+                testRecursive: boolean;
+                testSort: boolean;
+                testSpec: string[];
+                testCoverage: boolean;
+                theiaArgs: string[];
+            }) => {
                 if (!process.env.THEIA_CONFIG_DIR) {
                     process.env.THEIA_CONFIG_DIR = temp.track().mkdirSync('theia-test-config-dir');
                 }
