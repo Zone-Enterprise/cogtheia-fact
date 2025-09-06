@@ -91,6 +91,15 @@ import { MultiModalCognitiveWidget } from './cognitive-widgets/multi-modal-cogni
 import { ProductionMonitoringWidget } from './production-monitoring-widget';
 import { FrontendProductionOptimizationService } from './frontend-production-optimization-service';
 import { ProductionMonitoringContribution } from './production-monitoring-contribution';
+// Phase 6: Production Deployment Services
+import { 
+    ProductionConfigurationService,
+    ProductionDeploymentService,
+    ProductionMonitoringService,
+    CommunityEnhancementService
+} from '../common';
+import { FrontendProductionConfigurationService } from './frontend-production-configuration';
+import { FrontendCommunityEnhancementService } from './frontend-community-enhancement';
 
 export default new ContainerModule(bind => {
     // Bind the frontend OpenCog service
@@ -104,6 +113,12 @@ export default new ContainerModule(bind => {
     
     // Phase 5: Bind the frontend Production Optimization service
     bind(ProductionOptimizationService).to(FrontendProductionOptimizationService).inSingletonScope();
+    
+    // Phase 6: Bind Production Deployment Services
+    bind(ProductionConfigurationService).to(FrontendProductionConfigurationService).inSingletonScope();
+    bind(ProductionDeploymentService).toSelf().inSingletonScope();
+    bind(ProductionMonitoringService).toSelf().inSingletonScope();
+    bind(CommunityEnhancementService).to(FrontendCommunityEnhancementService).inSingletonScope();
     
     // Phase 3: Bind frontend reasoning services
     bind(DeductiveReasoningService).to(FrontendDeductiveReasoningService).inSingletonScope();
