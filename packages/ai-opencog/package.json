@@ -50,6 +50,7 @@
     "test": "theiaext test",
     "watch": "theiaext watch",
     "validate:phase6": "node phase6-validation.js",
+    "validate:resource-requirements": "node validate-resource-requirements.js",
     "docker:build": "docker build -t theia-opencog:latest .",
     "docker:run": "docker run -d --name theia-opencog -p 3000:3000 theia-opencog:latest",
     "deploy:production": "docker-compose -f docker-compose.production.yml up -d",
