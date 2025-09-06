@@ -104,6 +104,7 @@ Read below how to engage with Theia community:
 - [API Documentation](https://eclipse-theia.github.io/theia/docs/next/index.html)
 - [General Documentation](https://theia-ide.org/docs/)
 - [VS Code API Compatibility Report](https://eclipse-theia.github.io/vscode-theia-comparator/status.html)
+- **OpenCog Integration**: [Project Conclusion](PROJECT_CONCLUSION.md) - Complete cognitive AI integration
 - Useful Links:
   - [Developing](doc/Developing.md)
   - [Testing](doc/Testing.md)
