@@ -59,6 +59,38 @@ For example:
 }
 ```
 
+### v1.64.0
+
+#### ES Module Migration for CLI Scripts
+
+The `theia-patch` CLI script has been refactored from mixed CommonJS/ES module syntax to pure ES module syntax for better Node.js 20.x/22.x compatibility.
+
+**What changed:**
+- `dev-packages/cli/bin/theia-patch.js` now uses ES module `import` statements instead of CommonJS `require()` 
+- `require.resolve()` calls now use `createRequire(import.meta.url)` for compatibility
+- All Node.js built-in modules are imported using the `node:` prefix (e.g., `node:process`, `node:path`)
+
+**For developers:**
+- This change maintains backward compatibility - no action required for normal usage
+- If extending or modifying CLI scripts, prefer ES module syntax over CommonJS
+- Use `import { createRequire } from "node:module"` when you need `require.resolve()` functionality in ES modules
+
+**Migration pattern for similar scripts:**
+```javascript
+// Before (CommonJS mixed with ES modules)
+import process from "node:process";
+const path = require('path');
+const cp = require('child_process');
+
+// After (Pure ES modules)  
+import process from "node:process";
+import path from "node:path";
+import cp from "node:child_process";
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
+```
+
 ### v1.62.0
 
 #### Refactor menu nodes [#14676](https://github.com/eclipse-theia/theia/pull/14676)
