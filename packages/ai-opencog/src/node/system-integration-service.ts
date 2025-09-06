@@ -392,8 +392,8 @@ export class SystemIntegrationService {
     }
 
     private calculateSystemHealth(resourceMetrics: ResourceMetrics, cacheHitRate: number): number {
-        const memoryHealth = Math.max(0, 1 - (resourceMetrics.memoryUsage.total / (500 * 1024 * 1024))); // 500MB max
-        const cpuHealth = Math.max(0, 1 - (resourceMetrics.utilization.cpuUsage / 100));
+        const memoryHealth = Math.max(0, 1 - (resourceMetrics.memoryUsage.total / (500 * 1024 * 1024))); // 500MB max (success metric)
+        const cpuHealth = Math.max(0, 1 - (resourceMetrics.utilization.cpuUsage / 10)); // 10% max (success metric)
         const cacheHealth = cacheHitRate;
         
         return (memoryHealth + cpuHealth + cacheHealth) / 3;

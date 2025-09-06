@@ -136,15 +136,15 @@ describe('ResourceManager', () => {
         // Set metrics that would trigger optimization
         resourceManager.updateMetrics({
             memoryUsage: {
-                atomSpace: 120 * 1024 * 1024,
-                learningModels: 30 * 1024 * 1024,
-                cache: 20 * 1024 * 1024,
-                total: 170 * 1024 * 1024 // Above warning threshold
+                atomSpace: 350 * 1024 * 1024,
+                learningModels: 50 * 1024 * 1024,
+                cache: 30 * 1024 * 1024,
+                total: 430 * 1024 * 1024 // Above warning threshold (400MB)
             },
             performance: {
-                queryLatency: 1500, // Above warning threshold
-                reasoningLatency: 800,
-                learningLatency: 400,
+                queryLatency: 90, // Above warning threshold (80ms)
+                reasoningLatency: 150,
+                learningLatency: 120,
                 throughput: 50
             }
         });

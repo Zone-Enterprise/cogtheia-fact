@@ -63,12 +63,12 @@ export class ResourceManager {
 
     constructor() {
         this.thresholds = {
-            memoryWarning: 100 * 1024 * 1024, // 100MB
-            memoryCritical: 200 * 1024 * 1024, // 200MB
-            latencyWarning: 1000, // 1s
-            latencyCritical: 5000, // 5s
-            cpuWarning: 70, // 70%
-            cpuCritical: 90 // 90%
+            memoryWarning: 400 * 1024 * 1024, // 400MB (80% of 500MB target)
+            memoryCritical: 500 * 1024 * 1024, // 500MB (target threshold)
+            latencyWarning: 80, // 80ms (80% of 100ms target)
+            latencyCritical: 100, // 100ms (target threshold)
+            cpuWarning: 8, // 8% (80% of 10% target)
+            cpuCritical: 10 // 10% (target threshold)
         };
 
         this.initializeOptimizationStrategies();
